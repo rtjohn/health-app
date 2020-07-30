@@ -6,15 +6,19 @@ library(dplyr)
 library(ggthemes)
 library(zoo)
 # Load data ----
-data <- read.csv('~/DSwork/health-app/data/health_metrics.csv',
-                 header = TRUE, 
+filenames <- Sys.glob("data/health_metrics_*.csv")
+newdates <- gsub(".csv", "", sub("data/health_metrics_", "", filenames))
+datenames <- as.Date(newdates, format = "%Y-%m-%d")
+data <- read.csv(file=filenames[which.max(datenames)], 
+                 header=TRUE, 
+                 sep=",",
                  stringsAsFactors = FALSE,
                  col.names = c("Date", "Weight", "Body_Fat", "Protein", "Fat", 
-                              "Carbs", "Kcal_Input", "Kcal_Output", 
-                              "Kcal_Deficit"),
+                               "Carbs", "Kcal_Input", "Kcal_Output", 
+                               "Kcal_Deficit"),
                  colClasses = c('character', 'numeric', 'numeric', 
-                                 'numeric', 'numeric', 'numeric', 'numeric', 
-                                 'numeric', 'numeric'),
+                                'numeric', 'numeric', 'numeric', 'numeric', 
+                                'numeric', 'numeric'),
                  na.strings = c("", ".", "NA")
                  )
 data$Date <- as.Date(data$Date, format = '%m/%d/%y')
@@ -138,7 +142,7 @@ server <- function(input, output, session) {
                         'Kcal_Deficit')
         new_data <- make_rm(new_data, columns_rm, 14)
         write.csv(new_data, file = paste0("~/DSwork/health-app/data/", 
-                                          "test_", 
+                                          "health_metrics_", 
                                           Sys.Date(), 
                                           ".csv"), 
                   row.names = FALSE)
