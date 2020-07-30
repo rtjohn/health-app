@@ -67,13 +67,12 @@ ui <- fluidPage(
             sliderInput('movavg', label = 'Moving Average', 2, 28, value = 14),
             width = 2
         ),
-        mainPanel(h4(textOutput('notifier')),
-                  h4(textOutput('mv_choice')),
+        mainPanel(h5(textOutput('notifier')),
                   br(),
                   plotlyOutput("plot_bw", height = '300px'),
                   plotlyOutput("plot_bf", height = '300px'),
-                  plotlyOutput("plot_def"),
-                  plotlyOutput("plot_cals"),
+                  plotlyOutput("plot_def", height = '300px'),
+                  plotlyOutput("plot_cals", height = '300px'),
                   width=10
         )
     )
