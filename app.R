@@ -22,6 +22,7 @@ data <- read.csv(file=filenames[which.max(datenames)],
                  na.strings = c("", ".", "NA")
                  )
 data$Date <- as.Date(data$Date, format = '%m/%d/%y')
+data <- arrange(data, Date)
 data <- distinct(data, Date, .keep_all = TRUE)
 
 # Source helpers ----
@@ -36,16 +37,19 @@ ui <- fluidPage(
             dateInput('day', label = "Date of Values", value = format(Sys.Date(), "%Y/%m/%d")),
             numericInput("bw", label = "Body Weight", value = 0),
             numericInput("bf", label = "Body Fat %", value = 0),
-            numericInput("pro", label = "Protein", value = NA),
-            numericInput("fat", label = "Fat", value = NA),
-            numericInput("carb", label = "Carbs", value = NA),
+            #numericInput("pro", label = "Protein", value = NA),
+            #numericInput("fat", label = "Fat", value = NA),
+            #numericInput("carb", label = "Carbs", value = NA),
             numericInput("calin", label = "Calories Consumed", value = 0),
             numericInput("calout", label = "Calories Expended", value = 0),
             actionButton('button', 'ENTER'),
+            br(),
+            br(),
+            sliderInput('movavg', label = 'Moving Average', 2, 28, value = 14),
             width = 2
         ),
-        mainPanel(plotlyOutput("plot_bw"),
-                  plotlyOutput("plot_bf"),
+        mainPanel(plotlyOutput("plot_bw", height = '300px'),
+                  plotlyOutput("plot_bf", height = '300px'),
                   plotlyOutput("plot_def"),
                   plotlyOutput("plot_cals"),
                   width=10
@@ -65,6 +69,7 @@ server <- function(input, output, session) {
     output$plot_bw <- renderPlotly({
         bw <- ggplot(data, aes(x=Date)) +
             geom_line(aes(y=Weight), color = 'black', alpha=0.25, size=0.25) +
+            # NEED TO FIND A WAY TO NAME THESE COLUMNS BASED ON PERIOD
             geom_line(aes(y=Weight_14_Day_Rolling_Mean), color = 'black', size=1) +
             theme_minimal() +
             theme(axis.text.x=element_text(angle=60, hjust=1)) +
