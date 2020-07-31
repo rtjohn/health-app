@@ -189,7 +189,7 @@ server <- function(input, output, session) {
             paste0("Latest data displayed is from ", max_date, 
                    ". You have chosen a moving average of ", input$movavg, ' days.')
         })
-        new_data$Kcal_Deficit <- input$calin - input$calout
+        new_data$Kcal_Deficit <- new_data$Kcal_Input - new_data$Kcal_Output
         # Calculate moving average based on slider input
         dataInput <- reactive({
             make_rm(new_data, columns_rm, input$movavg)
